@@ -1,12 +1,14 @@
 import "./App.css";
-import Drag from "./tutorial/Drag";
-// import Rotate from "./tutorial/Rotate";
-// import Spring from "./tutorial/Spring";
+import GsapTest from "./tutorial/GsapTest";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 
 function App() {
+  gsap.registerPlugin(useGSAP);
+
   return (
     <>
-      <Drag />
+      <GsapTest></GsapTest>
     </>
   );
 }
