@@ -32,15 +32,20 @@ export default function GsapQueryStepper() {
 
   useGSAP(
     () => {
+      gsap.set([green.current, blue.current, orange.current], {
+        opacity: 0,
+        x: 0,
+      });
+
       tl.current = gsap.timeline({ paused: true });
 
       tl.current
         .addLabel(LABELS.start)
-        .to(green.current, { x: 650, duration: 1 })
+        .to(green.current, { x: 650, opacity: 1, duration: 1 })
         .addLabel(LABELS.green)
-        .to(blue.current, { x: 650, duration: 1 })
+        .to(blue.current, { x: 650, opacity: 1, duration: 1 })
         .addLabel(LABELS.blue)
-        .to(orange.current, { x: 650, duration: 1 })
+        .to(orange.current, { x: 650, opacity: 1, duration: 1 })
         .addLabel(LABELS.orange);
 
       tl.current.seek(currentLabel);
