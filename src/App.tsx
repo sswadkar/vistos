@@ -80,6 +80,7 @@ export default function App() {
     options.clip,
   );
   const currentRef = player.currentRef(moment.sceneId, moment.stepIndex);
+  const storyUrlPath = `${baseUrl}${story.id}/`;
 
   const copyText = async (text: string, successLabel: string) => {
     try {
@@ -484,7 +485,7 @@ export default function App() {
                     className="rounded-md bg-figmaArrow px-2.5 py-1.5 text-xs font-semibold text-figmaArrowInk enabled:hover:bg-slate-300"
                     title="Copy a link to the current frame and current in-frame progress"
                     onClick={async () => {
-                      const url = `${window.location.origin}${window.location.pathname}${player.buildSearch(
+                      const url = `${window.location.origin}${storyUrlPath}${player.buildSearch(
                         {
                           sceneId: moment.sceneId,
                           stepIndex: moment.stepIndex,
@@ -507,7 +508,7 @@ export default function App() {
                       if (!rangeDraft) return;
                       const normalized = player.normalizeRange(rangeDraft);
                       const startRef = normalized.from;
-                      const url = `${window.location.origin}${window.location.pathname}${player.buildSearch(
+                      const url = `${window.location.origin}${storyUrlPath}${player.buildSearch(
                         {
                           sceneId: startRef.sceneId,
                           stepIndex: startRef.stepIndex,
