@@ -26,6 +26,7 @@ function usePrefersReducedMotion() {
 }
 
 export default function App() {
+  const baseUrl = import.meta.env.BASE_URL;
   const [pathname, setPathname] = useState(() => window.location.pathname);
   const pathStoryId = useMemo(() => getPathStoryId(pathname), [pathname]);
   const isHomeIndex = !pathStoryId;
@@ -342,7 +343,7 @@ export default function App() {
             {availableStories.map((s) => (
               <a
                 key={s.id}
-                href={`${s.id}/`}
+                href={`${baseUrl}${s.id}/`}
                 className="block rounded-xl border border-slate-300/80 bg-white/70 px-4 py-3 shadow-sm hover:bg-white"
                 title={`Open ${s.title}`}
               >
