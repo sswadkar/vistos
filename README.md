@@ -40,9 +40,9 @@ Example pattern (Tailwind + animated visual using `progress`):
 
 ```tsx
 frame({
-  id: 'my-frame',
-  label: 'My Frame',
-  narration: 'Optional caption text shown at the bottom.',
+  id: "my-frame",
+  label: "My Frame",
+  narration: "Optional caption text shown at the bottom.",
   durationMs: 2400,
   visual: ({ progress, reducedMotion }) => (
     <>
@@ -51,12 +51,12 @@ frame({
       {!reducedMotion ? (
         <div
           className="absolute h-3 w-3 rounded-full bg-teal-600"
-          style={{ left: `${45 + progress * 12}%`, top: '30%' }}
+          style={{ left: `${45 + progress * 12}%`, top: "30%" }}
         />
       ) : null}
     </>
   ),
-})
+});
 ```
 
 You can also bypass the provided visual primitives and render any custom Tailwind/HTML structure you want.
@@ -94,6 +94,5 @@ Examples:
 
 ## Notes
 
-- The current story is **2PC-specific starter content**.
 - The engine is generic and can support other topics by swapping `src/data/scenes.ts` to export a different story package.
 - Tailwind is currently provided via the CDN script in `index.html` for fast authoring. You can migrate to the Tailwind Vite/PostCSS setup later if you want a production build pipeline.
