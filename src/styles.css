@@ -1,0 +1,4 @@
+/* Tailwind CDN provides the styling system. Keep only app-specific fallbacks here. */
+html, body, #root {
+  min-height: 100%;
+}

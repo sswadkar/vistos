@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/types.ts","./src/components/stage.tsx","./src/data/scenes.ts","./src/lib/motion.ts","./src/lib/player.ts","./src/stories/index.ts","./src/stories/2pc/frametemplate.tsx","./src/stories/2pc/story.tsx"],"version":"5.9.3"}
