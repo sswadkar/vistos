@@ -342,7 +342,7 @@ export default function App() {
             {availableStories.map((s) => (
               <a
                 key={s.id}
-                href={`/${s.id}/`}
+                href={`${s.id}/`}
                 className="block rounded-xl border border-slate-300/80 bg-white/70 px-4 py-3 shadow-sm hover:bg-white"
                 title={`Open ${s.title}`}
               >

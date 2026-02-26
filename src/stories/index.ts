@@ -16,8 +16,9 @@ export const storyRegistry: Record<string, StoryModule> = {
 };
 
 export function getPathStoryId(pathname: string): string | undefined {
-  const [first] = pathname.split('/').filter(Boolean);
-  return first && storyRegistry[first] ? first : undefined;
+  const parts = pathname.split('/').filter(Boolean);
+  const last = parts[parts.length - 1];
+  return last && storyRegistry[last] ? last : undefined;
 }
 
 export function listStories(): StoryModule[] {

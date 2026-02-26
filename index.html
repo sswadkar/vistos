@@ -26,6 +26,22 @@
         },
       };
     </script>
+    <script>
+      (function () {
+        const params = new URLSearchParams(window.location.search);
+        const redirected = params.get("__gh_redirect");
+        if (!redirected) return;
+        params.delete("__gh_redirect");
+        const extra = params.toString();
+        const target = decodeURIComponent(redirected);
+        if (extra) {
+          const joiner = target.includes("?") ? "&" : "?";
+          window.history.replaceState(null, "", `${target}${joiner}${extra}`);
+          return;
+        }
+        window.history.replaceState(null, "", target);
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
