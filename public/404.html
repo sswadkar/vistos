@@ -8,9 +8,7 @@
       (function () {
         var repoBase = "/vistos";
         var path = window.location.pathname;
-        var relative = path.startsWith(repoBase) ? path.slice(repoBase.length) : path;
-        if (!relative.startsWith("/")) relative = "/" + relative;
-        var target = relative + window.location.search + window.location.hash;
+        var target = path + window.location.search + window.location.hash;
         var next = repoBase + "/?__gh_redirect=" + encodeURIComponent(target);
         window.location.replace(next);
       })();
