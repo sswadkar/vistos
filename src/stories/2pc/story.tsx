@@ -486,10 +486,13 @@ export const twoPcScenes: SceneScript[] = [
         label: "Intro",
         hideCaption: false,
         narration:
-          "Since our database is monolithic, we can rely on local mechanisms (i.e. write ahead logging) to enforce transaction atomicity",
-        durationMs: 3000,
+          "Since our database is monolithic, we can rely on local mechanisms (i.e. write ahead logging) to enforce transaction atomicity, also known as preventing a partially applied transaction",
+        durationMs: 4000,
         loop: true,
         visual: ({ progress }) => {
+          const ackStart = 0.75;
+          const ackEnd = 0.98;
+
           return (
             <div className="relative w-full h-full">
               <div className="flex h-full flex-row items-center justify-center gap-96">
@@ -502,7 +505,7 @@ export const twoPcScenes: SceneScript[] = [
                 from={{ x: 35, y: 50 }}
                 to={{ x: 60, y: 50 }}
                 start={0.0}
-                end={0.8}
+                end={0.75}
                 fade
               >
                 <div className="-translate-x-1/2 -translate-y-1/2">
@@ -521,6 +524,21 @@ export const twoPcScenes: SceneScript[] = [
                   </div>
                 </div>
               </AnimateBetween>
+
+              {progress >= ackStart && (
+                <AnimateBetween
+                  progress={progress}
+                  from={{ x: 60, y: 50 }}
+                  to={{ x: 35, y: 50 }}
+                  start={ackStart}
+                  end={ackEnd}
+                  scaleIn
+                >
+                  <div className="-translate-x-1/2 -translate-y-1/2">
+                    <div className="h-8 w-8 rounded-full bg-green-500" />
+                  </div>
+                </AnimateBetween>
+              )}
             </div>
           );
         },
@@ -915,7 +933,7 @@ export const twoPcScenes: SceneScript[] = [
         hideCaption: false,
         narration:
           "Let’s say a transaction containing two writes update both Shard 1 and Shard 2",
-        durationMs: 6000,
+        durationMs: 4000,
         loop: true,
         visual: ({ progress }) => {
           const txStart = 0.0;
