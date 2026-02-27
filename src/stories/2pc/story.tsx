@@ -55,6 +55,8 @@ function tint(text: string) {
       '<span class="text-purple-700 font-bold">database</span>',
     )
     .replace(/shards/g, '<span class="text-pink-700 font-bold">shards</span>')
+    .replace(/Shard 1/g, '<span class="text-pink-700 font-bold">Shard 1</span>')
+    .replace(/Shard 2/g, '<span class="text-pink-700 font-bold">Shard 2</span>')
     .replace(
       /transaction/g,
       '<span class="text-orange-700 font-bold">transaction</span>',
@@ -604,6 +606,529 @@ export const twoPcScenes: SceneScript[] = [
                   <div className="flex flex-col justify-center text-white text-bold text-8xl">
                     2
                   </div>
+                </div>
+              </div>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "intro-shared-desc",
+        label: "Intro",
+        hideCaption: false,
+        narration:
+          "Let's say Shard 1 stores rows 100 - 199, and Shard 2 stores rows 200 - 299",
+        durationMs: 3000,
+        loop: false,
+        visual: ({ progress }) => {
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-96">
+                <div className="aspect-square w-32 shrink-0 rounded-full bg-green-700" />
+                <div className="flex flex-col gap-8">
+                  <div className="flex items-center justify-center aspect-square w-48 shrink-0 rounded-full bg-pink-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex justify-center text-bold text-6xl">
+                        <div>1</div>
+                      </div>
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">100 - 199</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center aspect-square w-48 shrink-0 rounded-full bg-pink-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex justify-center text-bold text-6xl">
+                        <div>2</div>
+                      </div>
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">200 - 299</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "intro-shared-sole-shard-transaction",
+        label: "Intro",
+        hideCaption: false,
+        narration:
+          "If a client issues a transaction, in which all reads and writes only access rows 100 - 199, then the entire transaction is handled by Shard 1",
+        durationMs: 4500,
+        loop: true,
+        visual: ({ progress }) => {
+          const txP = clampProgress(progress, 0.05, 1.0);
+          const ackP = clampProgress(progress, 0.05, 1.0);
+
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-96">
+                <div className="aspect-square w-32 shrink-0 rounded-full bg-green-700" />
+                <div className="flex flex-col gap-8">
+                  <div className="flex items-center justify-center aspect-square w-48 shrink-0 rounded-full bg-pink-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex justify-center text-bold text-6xl">
+                        <div>1</div>
+                      </div>
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">100 - 199</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center aspect-square w-48 shrink-0 rounded-full bg-pink-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex justify-center text-bold text-6xl">
+                        <div>2</div>
+                      </div>
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">200 - 299</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <AnimateBetween
+                progress={txP}
+                from={{ x: 35, y: 50 }}
+                to={{ x: 69, y: 35 }}
+                start={0.05}
+                end={0.5}
+                fade
+              >
+                <div className="-translate-x-1/2 -translate-y-1/2">
+                  <div className="flex flex-col items-center whitespace-nowrap">
+                    <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-blue-500 text-lg font-bold text-white">
+                      W
+                    </div>
+                    <div className="h-4 w-1 shrink-0 bg-orange-500" />
+                    <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-blue-500 text-lg font-bold text-white">
+                      W
+                    </div>
+                  </div>
+                </div>
+              </AnimateBetween>
+
+              <AnimateBetween
+                progress={ackP}
+                from={{ x: 69, y: 33 }}
+                to={{ x: 35, y: 47 }}
+                start={0.5}
+                end={0.92}
+                fade
+                scaleIn
+              >
+                <div className="-translate-x-1/2 -translate-y-1/2">
+                  <div className="h-8 w-8 rounded-full bg-green-500" />
+                </div>
+              </AnimateBetween>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "intro-shared-sole-shard-failed-transaction",
+        label: "Intro",
+        hideCaption: false,
+        narration:
+          "If Shard 1 crashes or is unable to handle this transaction, then its local mechanisms will still enforce transaction atomicity",
+        durationMs: 6000,
+        loop: true,
+        visual: ({ progress }) => {
+          const txP = clampProgress(progress, 0.05, 1.0);
+          const ackP = clampProgress(progress, 0.05, 1.0);
+
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-96">
+                <div className="aspect-square w-32 shrink-0 rounded-full bg-green-700" />
+                <div className="flex flex-col gap-8">
+                  <div className="flex items-center justify-center aspect-square w-48 shrink-0 rounded-full bg-pink-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex justify-center text-bold text-6xl">
+                        <div>1</div>
+                      </div>
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">100 - 199</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center aspect-square w-48 shrink-0 rounded-full bg-pink-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex justify-center text-bold text-6xl">
+                        <div>2</div>
+                      </div>
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">200 - 299</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <AnimateBetween
+                progress={txP}
+                from={{ x: 35, y: 50 }}
+                to={{ x: 69, y: 35 }}
+                start={0.05}
+                end={0.5}
+                fade
+              >
+                <div className="-translate-x-1/2 -translate-y-1/2">
+                  <div className="flex flex-col items-center whitespace-nowrap">
+                    <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-blue-500 text-lg font-bold text-white">
+                      W
+                    </div>
+                    <div className="h-4 w-1 shrink-0 bg-orange-500" />
+                    <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-blue-500 text-lg font-bold text-white">
+                      W
+                    </div>
+                  </div>
+                </div>
+              </AnimateBetween>
+
+              <AnimateBetween
+                progress={ackP}
+                from={{ x: 69, y: 33 }}
+                to={{ x: 35, y: 47 }}
+                start={0.5}
+                end={0.92}
+                fade
+                scaleIn
+              >
+                <div className="-translate-x-1/2 -translate-y-1/2">
+                  <div className="h-8 w-8 rounded-full bg-red-500" />
+                </div>
+              </AnimateBetween>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "intro-shared-multi-shard-transaction",
+        label: "Intro",
+        hideCaption: false,
+        narration:
+          "But what happens if a client issues a transaction that updates rows in different shards?",
+        durationMs: 4500,
+        loop: true,
+        visual: ({ progress }) => {
+          const txStart = 0.0;
+          const txEnd = 0.76;
+          const txLinear = clampProgress(progress, txStart, txEnd);
+          const txPt = pointBetween(
+            { x: 37, y: 50 },
+            { x: 58, y: 50 },
+            txLinear,
+          );
+          const lineGrow = clampProgress(progress, 0.0, 0.72);
+          const lineHeight = 16 + lineGrow * 164;
+          const fadeOut = 1 - segment(progress, 0.82, 0.98);
+          const txOpacity = progress < txStart ? 0 : fadeOut;
+
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-96">
+                <div className="aspect-square w-32 shrink-0 rounded-full bg-green-700" />
+                <div className="flex flex-col gap-8">
+                  <div className="flex items-center justify-center aspect-square w-48 shrink-0 rounded-full bg-pink-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex justify-center text-bold text-6xl">
+                        <div>1</div>
+                      </div>
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">100 - 199</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center aspect-square w-48 shrink-0 rounded-full bg-pink-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex justify-center text-bold text-6xl">
+                        <div>2</div>
+                      </div>
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">200 - 299</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <Abs
+                style={{
+                  left: `${txPt.x}%`,
+                  top: `${txPt.y}%`,
+                  opacity: txOpacity,
+                  transform: `scale(${0.9 + 0.1 * txLinear})`,
+                }}
+              >
+                <div className="-translate-x-1/2 -translate-y-1/2">
+                  <div className="flex flex-col items-center whitespace-nowrap">
+                    <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-blue-500 text-lg font-bold text-white">
+                      W
+                    </div>
+                    <div
+                      className="w-1 shrink-0 bg-orange-500"
+                      style={{ height: `${lineHeight}px` }}
+                    />
+                    <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-blue-500 text-lg font-bold text-white">
+                      W
+                    </div>
+                  </div>
+                </div>
+              </Abs>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "intro-shared-multi-shard-transaction-2",
+        label: "Intro",
+        hideCaption: false,
+        narration:
+          "Let’s say a transaction containing two writes update both Shard 1 and Shard 2",
+        durationMs: 6000,
+        loop: true,
+        visual: ({ progress }) => {
+          const txStart = 0.0;
+          const txEnd = 0.76;
+          const txLinear = clampProgress(progress, txStart, txEnd);
+          const txPt = pointBetween(
+            { x: 37, y: 50 },
+            { x: 58, y: 50 },
+            txLinear,
+          );
+          const lineGrow = clampProgress(progress, 0.0, 0.72);
+          const lineHeight = 16 + lineGrow * 164;
+          const fadeOut = 1 - segment(progress, 0.82, 0.98);
+          const txOpacity = progress < txStart ? 0 : fadeOut;
+
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-96">
+                <div className="aspect-square w-32 shrink-0 rounded-full bg-green-700" />
+                <div className="flex flex-col gap-8">
+                  <div className="flex items-center justify-center aspect-square w-48 shrink-0 rounded-full bg-pink-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex justify-center text-bold text-6xl">
+                        <div>1</div>
+                      </div>
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">100 - 199</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center aspect-square w-48 shrink-0 rounded-full bg-pink-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex justify-center text-bold text-6xl">
+                        <div>2</div>
+                      </div>
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">200 - 299</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <Abs
+                style={{
+                  left: `${txPt.x}%`,
+                  top: `${txPt.y}%`,
+                  opacity: txOpacity,
+                  transform: `scale(${0.9 + 0.1 * txLinear})`,
+                }}
+              >
+                <div className="-translate-x-1/2 -translate-y-1/2">
+                  <div className="flex flex-col items-center whitespace-nowrap">
+                    <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-blue-500 text-lg font-bold text-white">
+                      W
+                    </div>
+                    <div
+                      className="w-1 shrink-0 bg-orange-500"
+                      style={{ height: `${lineHeight}px` }}
+                    />
+                    <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-blue-500 text-lg font-bold text-white">
+                      W
+                    </div>
+                  </div>
+                </div>
+              </Abs>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "intro-shared-multi-shard-transaction-fail",
+        label: "Intro",
+        hideCaption: false,
+        narration:
+          "If Shard 1 fails to commit but Shard 2 commits successfully, the transaction becomes partially applied, violating atomicity",
+        durationMs: 6000,
+        loop: true,
+        visual: ({ progress }) => {
+          const txStart = 0.0;
+          const txEnd = 0.5;
+          const txLinear = clampProgress(progress, txStart, txEnd);
+          const txPt = pointBetween(
+            { x: 37, y: 50 },
+            { x: 58, y: 50 },
+            txLinear,
+          );
+          const lineGrow = clampProgress(progress, 0.0, 0.4);
+          const lineHeight = 16 + lineGrow * 164;
+          const fadeOut = 1 - segment(progress, 0.5, 0.62);
+          const txOpacity = progress < txStart ? 0 : fadeOut;
+          const returnStart = 0.55;
+          const returnEnd = 0.9;
+
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-96">
+                <div className="aspect-square w-32 shrink-0 rounded-full bg-green-700" />
+                <div className="flex flex-col gap-8">
+                  <div className="flex items-center justify-center aspect-square w-48 shrink-0 rounded-full bg-pink-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex justify-center text-bold text-6xl">
+                        <div>1</div>
+                      </div>
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">100 - 199</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center aspect-square w-48 shrink-0 rounded-full bg-pink-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex justify-center text-bold text-6xl">
+                        <div>2</div>
+                      </div>
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">200 - 299</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <Abs
+                style={{
+                  left: `${txPt.x}%`,
+                  top: `${txPt.y}%`,
+                  opacity: txOpacity,
+                  transform: "scale(1)",
+                }}
+              >
+                <div className="-translate-x-1/2 -translate-y-1/2">
+                  <div className="flex flex-col items-center whitespace-nowrap">
+                    <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-blue-500 text-lg font-bold text-white">
+                      W
+                    </div>
+                    <div
+                      className="w-1 shrink-0 bg-orange-500"
+                      style={{ height: `${lineHeight}px` }}
+                    />
+                    <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-blue-500 text-lg font-bold text-white">
+                      W
+                    </div>
+                  </div>
+                </div>
+              </Abs>
+
+              {progress >= returnStart && (
+                <AnimateBetween
+                  progress={progress}
+                  from={{ x: 65, y: 35 }}
+                  to={{ x: 37, y: 47 }}
+                  start={returnStart}
+                  end={returnEnd}
+                  scaleIn
+                >
+                  <div className="-translate-x-1/2 -translate-y-1/2">
+                    <div className="h-8 w-8 rounded-full bg-red-500" />
+                  </div>
+                </AnimateBetween>
+              )}
+
+              {progress >= returnStart && (
+                <AnimateBetween
+                  progress={progress}
+                  from={{ x: 65, y: 65 }}
+                  to={{ x: 37, y: 53 }}
+                  start={returnStart}
+                  end={returnEnd}
+                  scaleIn
+                >
+                  <div className="-translate-x-1/2 -translate-y-1/2">
+                    <div className="h-8 w-8 rounded-full bg-green-500" />
+                  </div>
+                </AnimateBetween>
+              )}
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "intro-final",
+        label: "Intro",
+        hideCaption: true,
+        narration: "",
+        durationMs: 6000,
+        loop: false,
+        visual: ({ progress }) => {
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex flex-col justify-center items-center h-full my-24 gap-16 text-3xl text-center">
+                <div className="">
+                  To prevent such partial commits, the system must coordinate
+                  the commit decision across{" "}
+                  <span className="font-bold text-pink-700">shards</span>,
+                  ensuring that either all{" "}
+                  <span className="font-bold text-pink-700">shards</span> commit
+                  or none do
+                </div>
+                <div>
+                  This is the motivation behind{" "}
+                  <span className="font-bold">Two-Phase Commit (2PC)</span>
                 </div>
               </div>
             </div>
