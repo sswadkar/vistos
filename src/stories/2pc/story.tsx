@@ -54,6 +54,7 @@ function tint(text: string) {
       /database/g,
       '<span class="text-purple-700 font-bold">database</span>',
     )
+    .replace(/shards/g, '<span class="text-pink-700 font-bold">shards</span>')
     .replace(
       /transaction/g,
       '<span class="text-orange-700 font-bold">transaction</span>',
@@ -336,11 +337,6 @@ function AnimateBetween({
   );
 }
 
-// Usage:
-// <AnimateBetween progress={progress} from={{x:40,y:40}} to={{x:60,y:40}} start={0.1} end={0.6}>
-//   <div className="px-2 py-1 rounded bg-figmaTeal text-white text-xs font-bold">PREPARE</div>
-// </AnimateBetween>
-
 function PreparedDashed({
   x,
   y,
@@ -404,12 +400,12 @@ export const twoPcScenes: SceneScript[] = [
 
               <AnimatedDot
                 progress={readP}
-                from={{ x: 30, y: 47 }}
+                from={{ x: 35, y: 47 }}
                 to={{ x: 60, y: 47 }}
                 color="#3B82F6"
                 label="R"
                 size="md"
-                start={0.1}
+                start={0.0}
                 end={0.7}
               />
 
@@ -523,6 +519,93 @@ export const twoPcScenes: SceneScript[] = [
                   </div>
                 </div>
               </AnimateBetween>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "intro-pre-shard",
+        label: "Intro",
+        hideCaption: false,
+        narration: "But if our database gets too big...",
+        durationMs: 4200,
+        loop: false,
+        visual: ({ progress }) => {
+          const growth = clampProgress(progress, 0.25, 0.95);
+          const dbSize = 240 + growth * 280;
+          const traffic = [
+            { kind: "W", start: 0.04, end: 0.44, color: "#2563eb" },
+            { kind: "W", start: 0.14, end: 0.54, color: "#2563eb" },
+            { kind: "W", start: 0.24, end: 0.64, color: "#2563eb" },
+            { kind: "W", start: 0.34, end: 0.74, color: "#2563eb" },
+            { kind: "W", start: 0.46, end: 0.9, color: "#2563eb" },
+          ];
+
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-80">
+                <div className="aspect-square w-32 shrink-0 rounded-full bg-green-700" />
+                <div
+                  className="shrink-0 rounded-full bg-purple-700"
+                  style={{
+                    width: `${dbSize}px`,
+                    height: `${dbSize}px`,
+                  }}
+                />
+              </div>
+
+              {/* <div className="-translate-x-1/2 -translate-y-1/2"> */}
+              <div className="flex items-center whitespace-nowrap">
+                {traffic.map((packet) => (
+                  <AnimateBetween
+                    key={`${packet.kind}-${packet.start}`}
+                    progress={progress}
+                    from={{ x: 35, y: 47 }}
+                    to={{ x: 60, y: 47 }}
+                    start={packet.start}
+                    end={packet.end}
+                    fade
+                    scaleIn
+                  >
+                    <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-blue-500 text-lg font-bold text-white">
+                      {packet.kind}
+                    </div>
+                  </AnimateBetween>
+                ))}
+              </div>
+            </div>
+            // </div>
+          );
+        },
+      }),
+      frame({
+        id: "intro-split-into-shard",
+        label: "Intro",
+        hideCaption: false,
+        narration:
+          "We may need to partition our database into independent managed subsets of data. These partitions are also known as shards",
+        durationMs: 4200,
+        loop: true,
+        visual: ({ progress }) => {
+          const splitP = clampProgress(progress, 0.25, 0.85);
+          const monolithScale = 1 - splitP * 0.45;
+          const monolithOpacity = 1 - splitP * 0.85;
+          const shardOpacity = clampProgress(progress, 0.35, 0.9);
+
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-16">
+                <div className="flex items-center justify-center aspect-square w-48 shrink-0 rounded-full bg-pink-700">
+                  <div className="flex flex-col justify-center text-white text-bold text-8xl">
+                    1
+                  </div>
+                </div>
+                <div className="flex items-center justify-center aspect-square w-48 shrink-0 rounded-full bg-pink-700">
+                  <div className="flex flex-col justify-center text-white text-bold text-8xl">
+                    2
+                  </div>
+                </div>
+              </div>
             </div>
           );
         },
