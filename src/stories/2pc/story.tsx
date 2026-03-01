@@ -47,50 +47,110 @@ function frame(spec: FrameSpec) {
   };
 }
 
-function tint(text: string) {
-  return text
-    .replace(/client/g, '<span class="text-green-700 font-bold">client</span>')
-    .replace(
-      /database/g,
-      '<span class="text-purple-700 font-bold">database</span>',
-    )
-    .replace(/shards/g, '<span class="text-pink-700 font-bold">shards</span>')
-    .replace(/Shard 1/g, '<span class="text-pink-700 font-bold">Shard 1</span>')
-    .replace(/Shard 2/g, '<span class="text-pink-700 font-bold">Shard 2</span>')
-    .replace(
-      /transaction/g,
-      '<span class="text-orange-700 font-bold">transaction</span>',
-    )
-    .replace(
-      /coordinator/g,
-      '<span class="text-figmaPurple font-bold">coordinator</span>',
-    )
-    .replace(
-      /participants/g,
-      '<span class="text-figmaBlue font-bold">participants</span>',
-    )
-    .replace(
-      /participant/g,
-      '<span class="text-figmaBlue font-bold">participant</span>',
-    )
-    .replace(
-      /PREPARE/g,
-      '<span class="text-figmaTeal font-bold">PREPARE</span>',
-    )
-    .replace(
-      /PREPARED/g,
-      '<span class="text-figmaDark font-extrabold">PREPARED</span>',
-    )
-    .replace(
-      /COMMIT/g,
-      '<span class="text-figmaDark font-extrabold">COMMIT</span>',
-    )
-    .replace(
-      /ABORT/g,
-      '<span class="text-figmaDark font-extrabold">ABORT</span>',
-    )
-    .replace(/YES/g, '<span class="text-figmaGreen font-extrabold">YES</span>')
-    .replace(/NO/g, '<span class="text-figmaRed font-extrabold">NO</span>');
+type Rule = [RegExp, string];
+
+const phraseRules: Rule[] = [
+  [
+    /\bTransaction Coordinator\b/g,
+    '<span class="text-figmaPurple font-bold">Transaction Coordinator</span>',
+  ],
+  [
+    /\btransaction coordinator\b/g,
+    '<span class="text-figmaPurple font-bold">transaction coordinator</span>',
+  ],
+  [
+    /\btransaction operations\b/g,
+    '<span class="text-blue-700 font-bold">transaction operations</span>',
+  ],
+];
+
+const rules: Rule[] = [
+  [/\bShard 1\b/g, '<span class="text-pink-700 font-bold">Shard 1</span>'],
+  [/\bShard 2\b/g, '<span class="text-pink-700 font-bold">Shard 2</span>'],
+
+  // longer first
+  [
+    /\bPREPARED\b/g,
+    '<span class="text-figmaDark font-extrabold">PREPARED</span>',
+  ],
+  [/\bPREPARE\b/g, '<span class="text-figmaTeal font-bold">PREPARE</span>'],
+
+  [/\bCOMMIT\b/g, '<span class="text-figmaDark font-extrabold">COMMIT</span>'],
+  [/\bABORT\b/g, '<span class="text-figmaDark font-extrabold">ABORT</span>'],
+
+  // plural first
+  [
+    /\bparticipants\b/g,
+    '<span class="text-figmaBlue font-bold">participants</span>',
+  ],
+  [
+    /\bparticipant\b/g,
+    '<span class="text-figmaBlue font-bold">participant</span>',
+  ],
+  [
+    /\bParticipant\b/g,
+    '<span class="text-figmaBlue font-bold">Participant</span>',
+  ],
+
+  [
+    /\btransactions\b/g,
+    '<span class="text-orange-700 font-bold">transactions</span>',
+  ],
+  [
+    /\btransaction\b/g,
+    '<span class="text-orange-700 font-bold">transaction</span>',
+  ],
+  [
+    /\bcoordinator\b/g,
+    '<span class="text-figmaPurple font-bold">coordinator</span>',
+  ],
+
+  [/\bActive\b/g, '<span class="text-black font-bold">Active</span>'],
+
+  [/\bAborted\b/g, '<span class="text-red-600 font-bold">Aborted</span>'],
+  [/\bAbort\b/g, '<span class="text-black font-bold">Abort</span>'],
+
+  [/\bPrepared\b/g, '<span class="text-black font-bold">Prepared</span>'],
+  [/\bPrepare\b/g, '<span class="text-black font-bold">Prepare</span>'],
+
+  [/\bCommited\b/g, '<span class="text-green-700 font-bold">Commited</span>'],
+  [/\bCommit\b/g, '<span class="text-black font-bold">Commit</span>'],
+
+  [/\bclient\b/g, '<span class="text-green-700 font-bold">client</span>'],
+  [/\bdatabase\b/g, '<span class="text-purple-700 font-bold">database</span>'],
+  [/\bshards\b/g, '<span class="text-pink-700 font-bold">shards</span>'],
+
+  [/\bYES\b/g, '<span class="text-figmaGreen font-extrabold">YES</span>'],
+  [/\bNO\b/g, '<span class="text-figmaRed font-extrabold">NO</span>'],
+];
+
+export function tint(text: string) {
+  // 1) Protect phrases with placeholders BEFORE any HTML is injected
+  const stash: string[] = [];
+  const makeToken = (i: number) => `\uE000${i}\uE001`; // private-use chars: unlikely to appear in real text
+
+  let out = text;
+
+  for (const [re, html] of phraseRules) {
+    out = out.replace(re, () => {
+      const token = makeToken(stash.length);
+      stash.push(html);
+      return token;
+    });
+  }
+
+  // 2) Apply normal single-word rules
+  for (const [re, html] of rules) {
+    out = out.replace(re, html);
+  }
+
+  // 3) Restore phrases last (so they win)
+  for (let i = 0; i < stash.length; i++) {
+    const tokenRe = new RegExp(makeToken(i), "g");
+    out = out.replace(tokenRe, stash[i]);
+  }
+
+  return out;
 }
 
 function Abs({
@@ -1149,6 +1209,233 @@ export const twoPcScenes: SceneScript[] = [
                   <span className="font-bold">Two-Phase Commit (2PC)</span>
                 </div>
               </div>
+            </div>
+          );
+        },
+      }),
+    ],
+  },
+  {
+    id: "two-phase-commit",
+    title: "Two Phase Commit Protocol",
+    steps: [
+      frame({
+        id: "intro-transaction-coordinator",
+        label: "Transaction Coordinator",
+        hideCaption: true,
+        narration: "",
+        title: () => <TitleVisual text="Two-Phase Commit (2PC) Protocol" />,
+        visual: () => null,
+        loop: false,
+      }),
+      frame({
+        id: "intro-transaction-coordinator",
+        label: "Transaction Coordinator",
+        hideCaption: false,
+        narration:
+          "This is a Transaction Coordinator. It’s responsible for managing the protocol, ensuring all nodes reach a unanimous decision, maintaining consistency and integrity",
+        durationMs: 3000,
+        loop: true,
+        visual: ({ progress }) => {
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-96">
+                <div className="aspect-square w-[30%] shrink-0 rounded-full bg-purple-700" />
+              </div>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "intro-participant",
+        label: "Participant",
+        hideCaption: false,
+        narration:
+          "This is a Participant. They execute transaction operations given to them by the transaction coordinator. In a database system, a participant is typically a shard responsible for a subset of the data",
+        durationMs: 3000,
+        loop: true,
+        visual: ({ progress }) => {
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-96">
+                <div className="aspect-square w-[30%] shrink-0 rounded-full bg-blue-700" />
+              </div>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "intro-participant",
+        label: "Participant",
+        hideCaption: false,
+        narration: "A participant may be in 1 of 4 states",
+        durationMs: 3000,
+        loop: true,
+        visual: ({ progress }) => {
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-96">
+                <div className="aspect-square w-[30%] shrink-0 rounded-full bg-blue-700" />
+              </div>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "intro-participant",
+        label: "Participant",
+        hideCaption: false,
+        narration:
+          "A participant starts off as Active, from here it may either Abort or Prepare",
+        durationMs: 3000,
+        loop: true,
+        visual: ({ progress }) => {
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-96">
+                <div className="aspect-square w-[30%] shrink-0 rounded-full bg-blue-700" />
+              </div>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "intro-participant",
+        label: "Participant",
+        hideCaption: false,
+        narration:
+          "A participant may be in the Prepared state, from here it may either Abort or Commit",
+        durationMs: 3000,
+        loop: true,
+        visual: ({ progress }) => {
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-96">
+                <div className="aspect-square w-[30%] shrink-0 rounded-full bg-blue-700 outline outline-8 outline-dashed outline-black" />
+              </div>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "intro-participant",
+        label: "Participant",
+        hideCaption: false,
+        narration:
+          "A participant may be in the Aborted state. This is a terminal state",
+        durationMs: 3000,
+        loop: true,
+        visual: ({ progress }) => {
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-96">
+                <div className="aspect-square w-[30%] shrink-0 rounded-full bg-blue-700 outline outline-8 outline-red-500" />
+              </div>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "intro-participant",
+        label: "Participant",
+        hideCaption: false,
+        narration:
+          "And a participant may be in the Commited state, which is also a terminal state",
+        durationMs: 3000,
+        loop: true,
+        visual: ({ progress }) => {
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-96">
+                <div className="aspect-square w-[30%] shrink-0 rounded-full bg-blue-700 outline outline-8 outline-green-500" />
+              </div>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "intro-pre-prepare",
+        label: "Pre Prepare",
+        hideCaption: false,
+        narration:
+          "In this protocol, all transactions issued by a client go through the transaction coordinator which routes transaction operations to the appropriate shards",
+        durationMs: 6000,
+        loop: true,
+        visual: ({ progress }) => {
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-64">
+                <div className="aspect-square w-48 shrink-0 rounded-full bg-green-700" />
+                <div className="aspect-square w-72 shrink-0 rounded-full bg-purple-700" />
+                <div className="flex flex-col gap-12">
+                  <div className="flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-pink-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">1 - 10</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-pink-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">11 - 20</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-pink-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">21 - 30</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <AnimateBetween
+                progress={progress}
+                from={{ x: 24, y: 47 }}
+                to={{ x: 45, y: 47 }}
+                start={0.02}
+                end={0.32}
+                fade
+                scaleIn
+              >
+                <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-orange-500 text-sm font-bold text-white"></div>
+              </AnimateBetween>
+
+              <AnimateBetween
+                progress={progress}
+                from={{ x: 55, y: 47 }}
+                to={{ x: 78, y: 27 }}
+                start={0.35}
+                end={0.65}
+                fade
+                scaleIn
+              >
+                <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-blue-700 text-sm font-bold text-white"></div>
+              </AnimateBetween>
+
+              <AnimateBetween
+                progress={progress}
+                from={{ x: 55, y: 47 }}
+                to={{ x: 78, y: 47 }}
+                start={0.68}
+                end={0.98}
+                fade
+                scaleIn
+              >
+                <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-blue-700 text-sm font-bold text-white"></div>
+              </AnimateBetween>
             </div>
           );
         },
