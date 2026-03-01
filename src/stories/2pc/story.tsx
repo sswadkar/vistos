@@ -932,7 +932,7 @@ export const twoPcScenes: SceneScript[] = [
         label: "Intro",
         hideCaption: false,
         narration:
-          "Let’s say a transaction containing two writes update both Shard 1 and Shard 2",
+          "Let's say a transaction containing two writes updates both Shard 1 and Shard 2",
         durationMs: 4000,
         loop: true,
         visual: ({ progress }) => {
