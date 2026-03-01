@@ -62,6 +62,10 @@ const phraseRules: Rule[] = [
     /\btransaction operations\b/g,
     '<span class="text-blue-700 font-bold">transaction operations</span>',
   ],
+  [
+    /\blocal checks\b/g,
+    '<span class="text-yellow-700 font-bold">local checks</span>',
+  ],
 ];
 
 const rules: Rule[] = [
@@ -77,6 +81,7 @@ const rules: Rule[] = [
 
   [/\bCOMMIT\b/g, '<span class="text-figmaDark font-extrabold">COMMIT</span>'],
   [/\bABORT\b/g, '<span class="text-figmaDark font-extrabold">ABORT</span>'],
+  [/\bACTIVE\b/g, '<span class="text-figmaDark font-extrabold">ACTIVE</span>'],
 
   // plural first
   [
@@ -182,11 +187,28 @@ function TitleVisual({ text }: { text: string }) {
   );
 }
 
-function TxBox({ x, y, lines }: { x: string; y: string; lines: string[] }) {
+function TxBox({
+  x,
+  y,
+  lines,
+  scale = 1,
+  borderColor = "#d54b0f",
+}: {
+  x: string;
+  y: string;
+  lines: string[];
+  scale?: number;
+  borderColor?: string;
+}) {
   return (
     <Abs
-      style={{ left: x, top: y }}
-      className="border-2 border-[#d54b0f] bg-transparent px-[10px] py-[6px] text-[clamp(0.8rem,1.1vw,1.08rem)] leading-[1.18] text-[#3b3b3b] font-mono"
+      style={{
+        left: x,
+        top: y,
+        borderColor,
+        transform: `translate(-50%, -50%) scale(${scale})`,
+      }}
+      className="border-2 bg-transparent px-[14px] py-[10px] text-[clamp(1rem,1.4vw,1.4rem)] leading-[1.2] text-[#3b3b3b] font-mono"
     >
       {lines.map((line) => (
         <div key={line}>{line}</div>
@@ -1469,7 +1491,7 @@ export const twoPcScenes: SceneScript[] = [
               <AnimateBetween
                 progress={progress}
                 from={{ x: 24, y: 47 }}
-                to={{ x: 45, y: 47 }}
+                to={{ x: 42, y: 47 }}
                 start={0.02}
                 end={0.32}
                 fade
@@ -1501,6 +1523,493 @@ export const twoPcScenes: SceneScript[] = [
               >
                 <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-blue-700 text-sm font-bold text-white"></div>
               </AnimateBetween>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "intro-pre-prepare-explanation",
+        label: "Pre Prepare",
+        hideCaption: false,
+        narration:
+          "While the coordinator may communicate with all shards, participant status is defined per transaction and includes only shards involved in that transaction",
+        durationMs: 6000,
+        loop: true,
+        visual: ({ progress }) => {
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-64">
+                <div className="aspect-square w-48 shrink-0 rounded-full bg-green-700" />
+                <div className="aspect-square w-72 shrink-0 rounded-full bg-purple-700" />
+                <div className="flex flex-col gap-12">
+                  <div className="flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-pink-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">1 - 10</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-pink-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">11 - 20</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-pink-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">21 - 30</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <AnimateBetween
+                progress={progress}
+                from={{ x: 24, y: 47 }}
+                to={{ x: 42, y: 47 }}
+                start={0.02}
+                end={0.32}
+                fade
+                scaleIn
+              >
+                <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-orange-500 text-sm font-bold text-white"></div>
+              </AnimateBetween>
+
+              <AnimateBetween
+                progress={progress}
+                from={{ x: 55, y: 47 }}
+                to={{ x: 78, y: 27 }}
+                start={0.35}
+                end={0.65}
+                fade
+                scaleIn
+              >
+                <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-blue-700 text-sm font-bold text-white"></div>
+              </AnimateBetween>
+
+              <AnimateBetween
+                progress={progress}
+                from={{ x: 55, y: 47 }}
+                to={{ x: 78, y: 47 }}
+                start={0.68}
+                end={0.98}
+                fade
+                scaleIn
+              >
+                <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-blue-700 text-sm font-bold text-white"></div>
+              </AnimateBetween>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "intro-pre-prepare-explanation-shard",
+        label: "Pre Prepare",
+        hideCaption: false,
+        narration:
+          "For this transaction, only the first two shards are considered participants, since they contain the affected rows",
+        durationMs: 6000,
+        loop: true,
+        visual: ({ progress }) => {
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-96">
+                <div className="flex flex-row gap-24">
+                  <div>
+                    <TxBox
+                      x="17%"
+                      y="50%"
+                      scale={1.2}
+                      lines={["UPDATE ROW 5", "UPDATE ROW 15"]}
+                    ></TxBox>
+                  </div>
+                  <div className="aspect-square w-72 shrink-0 rounded-full bg-purple-700" />
+                </div>
+
+                <div className="flex flex-col gap-12">
+                  <div className="flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-blue-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">1 - 10</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-blue-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">11 - 20</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-pink-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">21 - 30</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "intro-pre-prepare-coordinator-req",
+        label: "Pre Prepare",
+        hideCaption: false,
+        narration:
+          "Upon receiving a transaction, the coordinator sends a PREPARE request to all participants of the transaction, asking the participants to prepare to commit the transaction",
+        durationMs: 6000,
+        loop: true,
+        visual: ({ progress }) => {
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-96">
+                <div className="flex flex-row gap-24">
+                  <div>
+                    <TxBox
+                      x="17%"
+                      y="50%"
+                      scale={1.2}
+                      lines={["UPDATE ROW 5", "UPDATE ROW 15"]}
+                    ></TxBox>
+                  </div>
+                  <div className="aspect-square w-72 shrink-0 rounded-full bg-purple-700" />
+                </div>
+
+                <div className="flex flex-col gap-12">
+                  <div className="flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-blue-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">1 - 10</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-blue-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">11 - 20</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <AnimateBetween
+                progress={progress}
+                from={{ x: 47, y: 44 }}
+                to={{ x: 67, y: 36 }}
+                start={0.05}
+                end={0.5}
+                scaleIn
+              >
+                <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-teal-700 text-2xl text-white">
+                  5
+                </div>
+              </AnimateBetween>
+
+              <AnimateBetween
+                progress={progress}
+                from={{ x: 47, y: 51 }}
+                to={{ x: 67, y: 58 }}
+                start={0.05}
+                end={0.5}
+                scaleIn
+              >
+                <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-teal-700 text-2xl text-white">
+                  15
+                </div>
+              </AnimateBetween>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "intro-pre-prepare-participant-checking",
+        label: "Pre Prepare",
+        hideCaption: false,
+        narration:
+          "Still in the ACTIVE state, each participant conducts local checks to ensure that it can guarantee a commit if instructed by the coordinator",
+        durationMs: 6000,
+        loop: true,
+        visual: ({ progress }) => {
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-96">
+                <div className="flex flex-row gap-24">
+                  <div className="px-7">
+                    <TxBox
+                      x="17%"
+                      y="50%"
+                      scale={1.2}
+                      lines={["UPDATE ROW 5", "UPDATE ROW 15"]}
+                    ></TxBox>
+                  </div>
+                  <div className="aspect-square w-72 shrink-0 rounded-full bg-purple-700" />
+                </div>
+
+                <div className="flex flex-col gap-12">
+                  <div className="flex flex-row gap-2 items-center">
+                    <div className="flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-blue-700">
+                      <div className="flex flex-col justify-center text-white gap-1">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex flex-col justify-center text-bold text-lg">
+                            <div className="flex justify-center">Rows:</div>
+                            <div className="flex justify-center">1 - 10</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="grid aspect-square h-12 w-12 shrink-0 place-items-center rounded-full bg-yellow-600 text-2xl text-white">
+                      5
+                    </div>
+                  </div>
+                  <div className="flex flex-row gap-2 items-center">
+                    <div className="flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-blue-700">
+                      <div className="flex flex-col justify-center text-white gap-1">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex flex-col justify-center text-bold text-lg">
+                            <div className="flex justify-center">Rows:</div>
+                            <div className="flex justify-center">11 - 20</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="grid aspect-square h-12 w-12 shrink-0 place-items-center rounded-full bg-yellow-600 text-2xl text-white">
+                      15
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "intro-pre-prepare-yes",
+        label: "Pre Prepare",
+        hideCaption: false,
+        narration:
+          "If a participant passes local checks, it votes YES, indicating that it has entered a PREPARED state and can commit if instructed",
+        durationMs: 6000,
+        loop: true,
+        visual: ({ progress }) => {
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-96">
+                <div className="flex flex-row gap-24">
+                  <div>
+                    <TxBox
+                      x="17%"
+                      y="50%"
+                      scale={1.2}
+                      lines={["UPDATE ROW 5", "UPDATE ROW 15"]}
+                    ></TxBox>
+                  </div>
+                  <div className="aspect-square w-72 shrink-0 rounded-full bg-purple-700" />
+                </div>
+
+                <div className="flex flex-col gap-12">
+                  <div className="flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-blue-700 outline-dashed outline-4 outline-offset-1">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">1 - 10</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-blue-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">11 - 20</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <AnimateBetween
+                progress={progress}
+                from={{ x: 67, y: 36 }}
+                to={{ x: 47, y: 46 }}
+                start={0.05}
+                end={0.5}
+                scaleIn
+              >
+                <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-green-700 text-2xl text-white">
+                  5
+                </div>
+              </AnimateBetween>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "intro-pre-prepare-no",
+        label: "Pre Prepare",
+        hideCaption: false,
+        narration:
+          "If a participant fails local checks, it votes NO, indicating to the coordinator that the transaction cannot commit and must be aborted",
+        durationMs: 6000,
+        loop: true,
+        visual: ({ progress }) => {
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-96">
+                <div className="flex flex-row gap-24">
+                  <div>
+                    <TxBox
+                      x="17%"
+                      y="50%"
+                      scale={1.2}
+                      lines={["UPDATE ROW 5", "UPDATE ROW 15"]}
+                    ></TxBox>
+                  </div>
+                  <div className="aspect-square w-72 shrink-0 rounded-full bg-purple-700" />
+                </div>
+
+                <div className="flex flex-col gap-12">
+                  <div className="flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-blue-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">1 - 10</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-blue-700 outline outline-red-500 outline-4">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">11 - 20</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <AnimateBetween
+                progress={progress}
+                from={{ x: 67, y: 56 }}
+                to={{ x: 47, y: 46 }}
+                start={0.05}
+                end={0.5}
+                scaleIn
+              >
+                <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-red-500 text-2xl text-white">
+                  15
+                </div>
+              </AnimateBetween>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "intro-pre-prepare-in-db",
+        label: "Pre Prepare",
+        hideCaption: false,
+        narration:
+          "In a database, these local checks include acquiring locks, validating constraints (i.e. there’s enough storage), and writing and flushing a PREPARED record to its write-ahead log (WAL)",
+        durationMs: 6000,
+        loop: true,
+        visual: ({ progress }) => {
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-96">
+                <div className="flex flex-row gap-24">
+                  <div className="">
+                    <TxBox
+                      x="17%"
+                      y="50%"
+                      scale={1.2}
+                      lines={["UPDATE ROW 5", "UPDATE ROW 15"]}
+                    ></TxBox>
+                  </div>
+                  <div className="aspect-square w-72 shrink-0 rounded-full bg-purple-700" />
+                </div>
+
+                <div className="flex flex-col gap-12">
+                  <div className="flex flex-row items-center">
+                    <div className="flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-blue-700">
+                      <div className="flex flex-col justify-center text-white gap-1">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex flex-col justify-center text-bold text-lg">
+                            <div className="flex justify-center">Rows:</div>
+                            <div className="flex justify-center">1 - 10</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <TxBox
+                        x="89%"
+                        y="40%"
+                        scale={1.2}
+                        borderColor="#0f766e"
+                        lines={["PREPARE TO UPDATE ROW 5"]}
+                      ></TxBox>
+                    </div>
+                  </div>
+                  <div className="flex flex-row items-center">
+                    <div className="flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-blue-700">
+                      <div className="flex flex-col justify-center text-white gap-1">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex flex-col justify-center text-bold text-lg">
+                            <div className="flex justify-center">Rows:</div>
+                            <div className="flex justify-center">11 - 20</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <TxBox
+                        x="89%"
+                        y="60%"
+                        scale={1.2}
+                        borderColor="#0f766e"
+                        lines={["PREPARE TO UPDATE ROW 15"]}
+                      ></TxBox>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           );
         },
