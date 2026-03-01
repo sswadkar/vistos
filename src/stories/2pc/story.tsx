@@ -441,11 +441,77 @@ export const twoPcScenes: SceneScript[] = [
         loop: false,
       }),
       frame({
+        id: "intro-client",
+        label: "Intro",
+        hideCaption: false,
+        narration: "Let's say we have a client",
+        durationMs: 2500,
+        loop: false,
+        visual: ({ progress }) => {
+          const scaleP = clampProgress(progress, 0.05, 0.35);
+          const scale = scaleP;
+          const opacity = clampProgress(progress, 0.0, 0.2);
+
+          return (
+            <div className="relative w-full h-full">
+              <Abs
+                style={{
+                  left: "31%",
+                  top: "50%",
+                  transform: `translate(-50%, -50%) scale(${scale})`,
+                  opacity,
+                }}
+              >
+                <div className="aspect-square w-32 shrink-0 rounded-full bg-green-700" />
+              </Abs>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "intro-database",
+        label: "Intro",
+        hideCaption: false,
+        narration: "and a database",
+        durationMs: 2500,
+        loop: false,
+        visual: ({ progress }) => {
+          const scaleP = clampProgress(progress, 0.05, 0.35);
+          const scale = scaleP;
+          const opacity = clampProgress(progress, 0.0, 0.2);
+
+          return (
+            <div className="relative w-full h-full">
+              <Abs
+                style={{
+                  left: "31%",
+                  top: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
+              >
+                <div className="aspect-square w-32 shrink-0 rounded-full bg-green-700" />
+              </Abs>
+
+              <Abs
+                style={{
+                  left: "67%",
+                  top: "50%",
+                  transform: `translate(-50%, -50%) scale(${scale})`,
+                  opacity,
+                }}
+              >
+                <div className="aspect-square w-48 shrink-0 rounded-full bg-purple-700" />
+              </Abs>
+            </div>
+          );
+        },
+      }),
+      frame({
         id: "intro",
         label: "Intro",
         hideCaption: false,
         narration:
-          "Let's say we have a client that issues a sequence of read and write operations against a database",
+          "This client that issues a sequence of read and write operations against a database",
         durationMs: 8000,
         visual: ({ progress }) => {
           const readP = clampProgress(progress, 0.1, 0.7);
@@ -612,7 +678,7 @@ export const twoPcScenes: SceneScript[] = [
         loop: false,
         visual: ({ progress }) => {
           const growth = clampProgress(progress, 0.25, 0.95);
-          const dbSize = 240 + growth * 280;
+          const dbSize = 190 + growth * 280;
           const traffic = [
             { kind: "W", start: 0.04, end: 0.44, color: "#2563eb" },
             { kind: "W", start: 0.14, end: 0.54, color: "#2563eb" },
@@ -623,8 +689,7 @@ export const twoPcScenes: SceneScript[] = [
 
           return (
             <div className="relative w-full h-full">
-              <div className="flex h-full flex-row items-center justify-center gap-80">
-                <div className="aspect-square w-32 shrink-0 rounded-full bg-green-700" />
+              <div className="flex h-full flex-row items-center justify-center gap-96">
                 <div
                   className="shrink-0 rounded-full bg-purple-700"
                   style={{
@@ -640,8 +705,8 @@ export const twoPcScenes: SceneScript[] = [
                   <AnimateBetween
                     key={`${packet.kind}-${packet.start}`}
                     progress={progress}
-                    from={{ x: 35, y: 47 }}
-                    to={{ x: 60, y: 47 }}
+                    from={{ x: 25, y: 47 }}
+                    to={{ x: 40, y: 47 }}
                     start={packet.start}
                     end={packet.end}
                     fade
