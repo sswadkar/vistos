@@ -2020,12 +2020,12 @@ export const twoPcScenes: SceneScript[] = [
         hideCaption: false,
         narration:
           "If all participants vote YES, the coordinator sends a COMMIT request to all participants to finalize the transaction",
-        durationMs: 6500,
+        durationMs: 8000,
         loop: true,
         visual: ({ progress }) => {
           const preparedP = clampProgress(progress, 0.02, 0.32);
-          const finalizeP = clampProgress(progress, 0.82, 0.98);
-          const preparedOpacity = preparedP * (1 - finalizeP);
+          const finalizeP = clampProgress(progress, 0.8, 1.0);
+          const preparedOpacity = 0.2 + preparedP * (1 - finalizeP);
 
           return (
             <div className="relative w-full h-full">
@@ -2114,8 +2114,9 @@ export const twoPcScenes: SceneScript[] = [
                 progress={progress}
                 from={{ x: 47, y: 44 }}
                 to={{ x: 67, y: 36 }}
-                start={0.38}
-                end={0.72}
+                start={0.58}
+                end={0.8}
+                fade
                 scaleIn
               >
                 <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-emerald-700 text-xl font-bold text-white">
@@ -2127,8 +2128,8 @@ export const twoPcScenes: SceneScript[] = [
                 progress={progress}
                 from={{ x: 47, y: 52 }}
                 to={{ x: 67, y: 58 }}
-                start={0.42}
-                end={0.76}
+                start={0.62}
+                end={0.84}
                 scaleIn
               >
                 <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-emerald-700 text-xl font-bold text-white">
