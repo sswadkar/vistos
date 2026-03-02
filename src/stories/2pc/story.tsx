@@ -2014,6 +2014,131 @@ export const twoPcScenes: SceneScript[] = [
           );
         },
       }),
+      frame({
+        id: "prepare-req-commit-if-all-yes",
+        label: "Commit",
+        hideCaption: false,
+        narration:
+          "If all participants vote YES, the coordinator sends a COMMIT request to all participants to finalize the transaction",
+        durationMs: 6500,
+        loop: true,
+        visual: ({ progress }) => {
+          const preparedP = clampProgress(progress, 0.02, 0.32);
+          const finalizeP = clampProgress(progress, 0.82, 0.98);
+          const preparedOpacity = preparedP * (1 - finalizeP);
+
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-96">
+                <div className="flex flex-row gap-24">
+                  <div>
+                    <TxBox
+                      x="17%"
+                      y="50%"
+                      scale={1.2}
+                      lines={["UPDATE ROW 5", "UPDATE ROW 15"]}
+                    ></TxBox>
+                  </div>
+                  <div className="aspect-square w-72 shrink-0 rounded-full bg-purple-700" />
+                </div>
+
+                <div className="flex flex-col gap-12">
+                  <div className="relative flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-blue-700">
+                    <div
+                      className="absolute inset-0 rounded-full outline outline-dashed outline-4 outline-offset-1 outline-black"
+                      style={{ opacity: preparedOpacity }}
+                    />
+                    <div
+                      className="absolute inset-0 rounded-full outline outline-[5px] outline-green-500"
+                      style={{ opacity: finalizeP }}
+                    />
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">1 - 10</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="relative flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-blue-700">
+                    <div
+                      className="absolute inset-0 rounded-full outline outline-dashed outline-4 outline-offset-1 outline-black"
+                      style={{ opacity: preparedOpacity }}
+                    />
+                    <div
+                      className="absolute inset-0 rounded-full outline outline-[5px] outline-green-500"
+                      style={{ opacity: finalizeP }}
+                    />
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">11 - 20</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <AnimateBetween
+                progress={progress}
+                from={{ x: 67, y: 36 }}
+                to={{ x: 47, y: 46 }}
+                start={0.04}
+                end={0.28}
+                fade
+                scaleIn
+              >
+                <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-green-600 text-2xl text-white">
+                  5
+                </div>
+              </AnimateBetween>
+
+              <AnimateBetween
+                progress={progress}
+                from={{ x: 67, y: 56 }}
+                to={{ x: 47, y: 52 }}
+                start={0.08}
+                end={0.32}
+                fade
+                scaleIn
+              >
+                <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-green-600 text-2xl text-white">
+                  15
+                </div>
+              </AnimateBetween>
+
+              <AnimateBetween
+                progress={progress}
+                from={{ x: 47, y: 44 }}
+                to={{ x: 67, y: 36 }}
+                start={0.38}
+                end={0.72}
+                scaleIn
+              >
+                <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-emerald-700 text-xl font-bold text-white">
+                  C
+                </div>
+              </AnimateBetween>
+
+              <AnimateBetween
+                progress={progress}
+                from={{ x: 47, y: 52 }}
+                to={{ x: 67, y: 58 }}
+                start={0.42}
+                end={0.76}
+                scaleIn
+              >
+                <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-emerald-700 text-xl font-bold text-white">
+                  C
+                </div>
+              </AnimateBetween>
+            </div>
+          );
+        },
+      }),
     ],
   },
 ];
