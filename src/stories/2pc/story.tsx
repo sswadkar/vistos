@@ -75,12 +75,16 @@ const rules: Rule[] = [
   // longer first
   [
     /\bPREPARED\b/g,
-    '<span class="text-figmaDark font-extrabold">PREPARED</span>',
+    '<span class="text-figmaTeal font-extrabold">PREPARED</span>',
   ],
   [/\bPREPARE\b/g, '<span class="text-figmaTeal font-bold">PREPARE</span>'],
 
+  [
+    /\bCOMMITTED\b/g,
+    '<span class="text-figmaGreen font-extrabold">COMMITTED</span>',
+  ],
   [/\bCOMMIT\b/g, '<span class="text-figmaDark font-extrabold">COMMIT</span>'],
-  [/\bABORT\b/g, '<span class="text-figmaDark font-extrabold">ABORT</span>'],
+  [/\bABORT\b/g, '<span class="text-figmaRed font-extrabold">ABORT</span>'],
   [/\bACTIVE\b/g, '<span class="text-figmaDark font-extrabold">ACTIVE</span>'],
 
   // plural first
@@ -381,6 +385,7 @@ function AnimateBetween({
   start = 0,
   end = 1,
   fade = false,
+  fadeOut = true,
   scaleIn = false,
   className = "",
   children,
@@ -391,6 +396,7 @@ function AnimateBetween({
   start?: number;
   end?: number;
   fade?: boolean;
+  fadeOut?: boolean;
   scaleIn?: boolean;
   className?: string;
   children: ReactNode;
@@ -401,9 +407,13 @@ function AnimateBetween({
   const fadeOffset = 0.06;
 
   const fadeIn = segment(progress, start + 0.02, start + fadeOffset);
-  const fadeOut = 1 - segment(progress, end - fadeOffset, end - 0.02);
+  const fadeOutProgress = 1 - segment(progress, end - fadeOffset, end - 0.02);
 
-  const opacity = fade ? Math.min(fadeIn, fadeOut) : 1;
+  const opacity = fade
+    ? fadeOut
+      ? Math.min(fadeIn, fadeOutProgress)
+      : fadeIn
+    : 1;
   const scale = scaleIn ? 0.8 + 0.2 * opacity : 1;
 
   return (
@@ -2023,9 +2033,7 @@ export const twoPcScenes: SceneScript[] = [
         durationMs: 8000,
         loop: true,
         visual: ({ progress }) => {
-          const preparedP = clampProgress(progress, 0.02, 0.32);
-          const finalizeP = clampProgress(progress, 0.8, 1.0);
-          const preparedOpacity = 0.2 + preparedP * (1 - finalizeP);
+          const preparedOpacity = 1;
 
           return (
             <div className="relative w-full h-full">
@@ -2048,10 +2056,6 @@ export const twoPcScenes: SceneScript[] = [
                       className="absolute inset-0 rounded-full outline outline-dashed outline-4 outline-offset-1 outline-black"
                       style={{ opacity: preparedOpacity }}
                     />
-                    <div
-                      className="absolute inset-0 rounded-full outline outline-[5px] outline-green-500"
-                      style={{ opacity: finalizeP }}
-                    />
                     <div className="flex flex-col justify-center text-white gap-1">
                       <div className="flex flex-col justify-center text-bold text-lg">
                         <div className="flex flex-col justify-center text-bold text-lg">
@@ -2065,10 +2069,6 @@ export const twoPcScenes: SceneScript[] = [
                     <div
                       className="absolute inset-0 rounded-full outline outline-dashed outline-4 outline-offset-1 outline-black"
                       style={{ opacity: preparedOpacity }}
-                    />
-                    <div
-                      className="absolute inset-0 rounded-full outline outline-[5px] outline-green-500"
-                      style={{ opacity: finalizeP }}
                     />
                     <div className="flex flex-col justify-center text-white gap-1">
                       <div className="flex flex-col justify-center text-bold text-lg">
@@ -2085,9 +2085,9 @@ export const twoPcScenes: SceneScript[] = [
               <AnimateBetween
                 progress={progress}
                 from={{ x: 67, y: 36 }}
-                to={{ x: 47, y: 46 }}
+                to={{ x: 40, y: 46 }}
                 start={0.04}
-                end={0.28}
+                end={0.38}
                 fade
                 scaleIn
               >
@@ -2099,9 +2099,9 @@ export const twoPcScenes: SceneScript[] = [
               <AnimateBetween
                 progress={progress}
                 from={{ x: 67, y: 56 }}
-                to={{ x: 47, y: 52 }}
+                to={{ x: 40, y: 52 }}
                 start={0.08}
-                end={0.32}
+                end={0.42}
                 fade
                 scaleIn
               >
@@ -2117,6 +2117,7 @@ export const twoPcScenes: SceneScript[] = [
                 start={0.58}
                 end={0.8}
                 fade
+                fadeOut={false}
                 scaleIn
               >
                 <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-emerald-700 text-xl font-bold text-white">
@@ -2128,12 +2129,476 @@ export const twoPcScenes: SceneScript[] = [
                 progress={progress}
                 from={{ x: 47, y: 52 }}
                 to={{ x: 67, y: 58 }}
-                start={0.62}
-                end={0.84}
+                start={0.58}
+                end={0.8}
+                fade
+                fadeOut={false}
                 scaleIn
               >
                 <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-emerald-700 text-xl font-bold text-white">
                   C
+                </div>
+              </AnimateBetween>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "participants-commit-and-ack",
+        label: "Committed",
+        hideCaption: false,
+        narration:
+          "Upon receiving the coordinator's COMMIT request, each participant finalizes the transaction, enters the COMMITTED state, and acknowledges the decision",
+        durationMs: 7000,
+        loop: true,
+        visual: ({ progress }) => {
+          const committedP = clampProgress(progress, 0.18, 0.56);
+          const ackOpacity = committedP;
+          const commitReqOpacity = 1 - segment(progress, 0.18, 0.28);
+
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-96">
+                <div className="flex flex-row gap-24">
+                  <div>
+                    <TxBox
+                      x="17%"
+                      y="50%"
+                      scale={1.2}
+                      lines={["UPDATE ROW 5", "UPDATE ROW 15"]}
+                    ></TxBox>
+                  </div>
+                  <div className="aspect-square w-72 shrink-0 rounded-full bg-purple-700" />
+                </div>
+
+                <div className="flex flex-col gap-12">
+                  <div className="relative flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-blue-700">
+                    <div
+                      className="absolute inset-0 rounded-full outline outline-dashed outline-4 outline-offset-1 outline-black"
+                      style={{ opacity: 1 - committedP }}
+                    />
+                    <div
+                      className="absolute inset-0 rounded-full outline outline-[5px] outline-green-500"
+                      style={{ opacity: committedP }}
+                    />
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">1 - 10</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="relative flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-blue-700">
+                    <div
+                      className="absolute inset-0 rounded-full outline outline-dashed outline-4 outline-offset-1 outline-black"
+                      style={{ opacity: 1 - committedP }}
+                    />
+                    <div
+                      className="absolute inset-0 rounded-full outline outline-[5px] outline-green-500"
+                      style={{ opacity: committedP }}
+                    />
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">11 - 20</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <Abs
+                style={{ left: "67%", top: "40%", opacity: commitReqOpacity }}
+              >
+                <div className="grid aspect-square w-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-emerald-700 text-xl font-bold text-white">
+                  C
+                </div>
+              </Abs>
+
+              <Abs
+                style={{ left: "67%", top: "60%", opacity: commitReqOpacity }}
+              >
+                <div className="grid aspect-square w-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-emerald-700 text-xl font-bold text-white">
+                  C
+                </div>
+              </Abs>
+
+              <AnimateBetween
+                progress={progress}
+                from={{ x: 67, y: 36 }}
+                to={{ x: 47, y: 44 }}
+                start={0.34}
+                end={0.7}
+                fade
+                fadeOut={false}
+                scaleIn
+              >
+                <div
+                  className="aspect-square w-10 rounded-full bg-green-700"
+                  style={{ opacity: ackOpacity }}
+                />
+              </AnimateBetween>
+
+              <AnimateBetween
+                progress={progress}
+                from={{ x: 67, y: 58 }}
+                to={{ x: 47, y: 52 }}
+                start={0.34}
+                end={0.7}
+                fade
+                fadeOut={false}
+                scaleIn
+              >
+                <div
+                  className="aspect-square w-10 rounded-full bg-green-700"
+                  style={{ opacity: ackOpacity }}
+                />
+              </AnimateBetween>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "commit-phase-if-all-yes-done",
+        label: "Commit Done",
+        hideCaption: false,
+        narration:
+          "At this point, the transaction is finished and its effects are durably committed",
+        durationMs: 6000,
+        loop: true,
+        visual: () => {
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-96">
+                <div className="flex flex-row gap-24">
+                  <div>
+                    <TxBox
+                      x="17%"
+                      y="50%"
+                      scale={1.2}
+                      lines={["UPDATE ROW 5", "UPDATE ROW 15"]}
+                    ></TxBox>
+                  </div>
+                  <div className="aspect-square w-72 shrink-0 rounded-full bg-purple-700" />
+                </div>
+
+                <div className="flex flex-col gap-12">
+                  <div className="relative flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-blue-700 outline outline-[5px] outline-green-500">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">1 - 10</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="relative flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-blue-700 outline outline-[5px] outline-green-500">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">11 - 20</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "transition-to-abort",
+        label: "Abort Path",
+        hideCaption: true,
+        durationMs: 5000,
+        loop: true,
+        visual: () => {
+          return (
+            <div className="relative w-full h-full">
+              <div className="absolute inset-0 grid place-items-center px-12">
+                <p className="m-0 text-center text-[2.05rem] font-medium leading-tight tracking-tight text-slate-600">
+                  <span>Now let&apos;s see what happens if a </span>
+                  <span className="font-bold text-blue-700">participant</span>
+                  <span> aborts</span>
+                </p>
+              </div>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "commit-phase-if-even-one-no",
+        label: "Abort Vote",
+        hideCaption: false,
+        narration:
+          "If any participant votes NO, the coordinator sends an ABORT request to all participants, instructing them to rollback their PREPARED transaction",
+        durationMs: 8000,
+        loop: true,
+        visual: ({ progress }) => {
+          const abortedP = clampProgress(progress, 0.72, 0.92);
+          const preparedTopOpacity = 1 - abortedP;
+          const abortTopOpacity = abortedP;
+
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-96">
+                <div className="flex flex-row gap-24">
+                  <div>
+                    <TxBox
+                      x="17%"
+                      y="50%"
+                      scale={1.2}
+                      lines={["UPDATE ROW 5", "UPDATE ROW 15"]}
+                    ></TxBox>
+                  </div>
+                  <div className="aspect-square w-72 shrink-0 rounded-full bg-purple-700" />
+                </div>
+
+                <div className="flex flex-col gap-12">
+                  <div className="relative flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-blue-700">
+                    <div
+                      className="absolute inset-0 rounded-full outline outline-dashed outline-4 outline-offset-1 outline-black"
+                      style={{ opacity: preparedTopOpacity }}
+                    />
+                    <div
+                      className="absolute inset-0 rounded-full outline outline-[5px] outline-red-500"
+                      style={{ opacity: abortTopOpacity }}
+                    />
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">1 - 10</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="relative flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-blue-700 outline outline-[5px] outline-red-500">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg">
+                          <div className="flex justify-center">Rows:</div>
+                          <div className="flex justify-center">11 - 20</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <AnimateBetween
+                progress={progress}
+                from={{ x: 72, y: 37 }}
+                to={{ x: 43, y: 46 }}
+                start={0.05}
+                end={0.4}
+                fade
+                scaleIn
+              >
+                <div className="aspect-square w-10 rounded-full bg-green-600" />
+              </AnimateBetween>
+
+              <AnimateBetween
+                progress={progress}
+                from={{ x: 72, y: 57 }}
+                to={{ x: 43, y: 52 }}
+                start={0.05}
+                end={0.4}
+                fade
+                scaleIn
+              >
+                <div className="aspect-square w-10 rounded-full bg-red-500" />
+              </AnimateBetween>
+
+              <AnimateBetween
+                progress={progress}
+                from={{ x: 47, y: 46 }}
+                to={{ x: 67, y: 37 }}
+                start={0.48}
+                end={0.7}
+                fade
+                fadeOut={false}
+                scaleIn
+              >
+                <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-red-700 text-xl font-bold text-white">
+                  A
+                </div>
+              </AnimateBetween>
+
+              <AnimateBetween
+                progress={progress}
+                from={{ x: 47, y: 52 }}
+                to={{ x: 67, y: 57 }}
+                start={0.48}
+                end={0.7}
+                fade
+                fadeOut={false}
+                scaleIn
+              >
+                <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-red-700 text-xl font-bold text-white">
+                  A
+                </div>
+              </AnimateBetween>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "two-phase-commit-final-note",
+        label: "2PC Summary",
+        hideCaption: true,
+        durationMs: 7000,
+        loop: true,
+        visual: () => {
+          return (
+            <div className="relative w-full h-full">
+              <div className="absolute inset-0 grid place-items-center px-16 py-12">
+                <div className="text-center text-[1.95rem] font-medium leading-tight tracking-tight text-slate-600">
+                  <span>The </span>
+                  <span className="font-extrabold text-teal-700">PREPARED</span>
+                  <span> state allows </span>
+                  <span className="font-bold text-blue-700">participants</span>
+                  <span> to hold </span>
+                  <span className="font-bold text-orange-700">
+                    transactions
+                  </span>
+                  <span>
+                    {" "}
+                    that have not yet committed, so their changes remain
+                    invisible and can be rolled back if the{" "}
+                  </span>
+                  <span className="font-bold text-figmaPurple">
+                    coordinator
+                  </span>
+                  <span> decides to </span>
+                  <span className="font-bold text-red-700">abort</span>
+                </div>
+              </div>
+            </div>
+          );
+        },
+      }),
+    ],
+  },
+  {
+    id: "exploring-partition-tolerance",
+    title: "Exploring Partition Tolerance with Two-Phase Commit (2PC)",
+    steps: [
+      frame({
+        id: "intro-failure-modes",
+        label: "Potential Failure Modes",
+        hideCaption: true,
+        narration: "",
+        title: () => (
+          <TitleVisual text="Exploring Partition Tolerance with Two-Phase Commit (2PC)" />
+        ),
+        visual: () => null,
+        loop: false,
+      }),
+      frame({
+        id: "coordinator-crash",
+        label: "Coordinator Crash",
+        hideCaption: true,
+        durationMs: 6000,
+        loop: true,
+        visual: () => {
+          return (
+            <div className="relative w-full h-full">
+              <div className="absolute inset-0 grid place-items-center px-16">
+                <p className="m-0 max-w-[86%] text-center text-[2.05rem] font-medium leading-tight tracking-tight text-slate-600">
+                  <span>Let&apos;s explore what happens if the </span>
+                  <span className="font-bold text-figmaPurple">
+                    coordinator
+                  </span>
+                  <span>
+                    {" "}
+                    becomes unreachable (i.e. coordinator crash, network
+                    partition, routing failure, etc)
+                  </span>
+                </p>
+              </div>
+            </div>
+          );
+        },
+      }),
+      frame({
+        id: "coordinator-crash-before-active",
+        label: "Before Active",
+        hideCaption: false,
+        narration:
+          "If the coordinator begins sending PREPARE requests and crashes after, we run into a problem",
+        durationMs: 8000,
+        loop: true,
+        visual: ({ progress }) => {
+          const prepareProgress = clampProgress(progress, 0.02, 0.92);
+
+          return (
+            <div className="relative w-full h-full">
+              <div className="flex h-full flex-row items-center justify-center gap-96">
+                <div className="flex flex-row gap-24">
+                  <div>
+                    <TxBox
+                      x="17%"
+                      y="50%"
+                      scale={1.2}
+                      lines={["UPDATE ROW X", "UPDATE ROW Y"]}
+                    ></TxBox>
+                  </div>
+                  <div className="aspect-square w-72 shrink-0 rounded-full bg-purple-700" />
+                </div>
+
+                <div className="flex flex-col gap-12">
+                  <div className="relative flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-blue-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="relative flex items-center justify-center aspect-square w-32 shrink-0 rounded-full bg-blue-700">
+                    <div className="flex flex-col justify-center text-white gap-1">
+                      <div className="flex flex-col justify-center text-bold text-lg">
+                        <div className="flex flex-col justify-center text-bold text-lg"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <AnimateBetween
+                progress={progress}
+                from={{ x: 47, y: 46 }}
+                to={{ x: 67, y: 37 }}
+                start={0.48}
+                end={0.7}
+                fade
+                fadeOut={false}
+                scaleIn
+              >
+                <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-teal-700 text-xl font-bold text-white">
+                  P
+                </div>
+              </AnimateBetween>
+
+              <AnimateBetween
+                progress={progress}
+                from={{ x: 47, y: 52 }}
+                to={{ x: 67, y: 57 }}
+                start={0.48}
+                end={0.7}
+                fade
+                fadeOut={false}
+                scaleIn
+              >
+                <div className="grid aspect-square w-12 shrink-0 place-items-center rounded-full bg-teal-700 text-xl font-bold text-white">
+                  P
                 </div>
               </AnimateBetween>
             </div>
