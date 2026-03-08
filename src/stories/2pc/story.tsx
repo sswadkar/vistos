@@ -1956,7 +1956,7 @@ export const twoPcScenes: SceneScript[] = [
         label: "Pre Prepare",
         hideCaption: false,
         narration:
-          "In a database, these local checks include acquiring locks, validating constraints (i.e. there’s enough storage), and writing and flushing a PREPARED record to its write-ahead log (WAL)",
+          "These local checks include acquiring locks, validating constraints (i.e. there’s enough storage), and writing and flushing a PREPARED record to its write-ahead log (WAL)",
         durationMs: 6000,
         loop: true,
         visual: ({ progress }) => {
