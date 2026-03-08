@@ -1,4 +1,24 @@
 /* Tailwind CDN provides the styling system. Keep only app-specific fallbacks here. */
-html, body, #root {
+:root {
+  --app-viewport-h: 100vh;
+  --app-safe-top: env(safe-area-inset-top, 0px);
+  --app-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --app-chrome-reserve: 164px;
+}
+
+@supports (height: 100dvh) {
+  :root {
+    --app-viewport-h: 100dvh;
+  }
+}
+
+html,
+body,
+#root {
+  height: 100%;
   min-height: 100%;
+}
+
+body {
+  margin: 0;
 }

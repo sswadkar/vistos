@@ -365,7 +365,9 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-figmaBg text-figmaInk grid grid-rows-[1fr_auto] items-center justify-items-center gap-2.5 px-3 pt-2.5 pb-4">
+    <div
+      className="grid h-[var(--app-viewport-h)] grid-rows-[1fr_auto] items-center justify-items-center gap-2.5 overflow-hidden bg-figmaBg px-3 pt-[calc(10px+var(--app-safe-top))] pb-[calc(16px+var(--app-safe-bottom))] text-figmaInk"
+    >
       <Stage
         scene={scene}
         frame={frame}
@@ -375,7 +377,7 @@ export default function App() {
 
       <div className="relative w-full max-w-[1280px] flex justify-center">
         {shareOpen ? (
-          <div className="absolute bottom-[calc(100%+10px)] left-1/2 z-20 w-[min(660px,calc(100vw-24px))] -translate-x-1/2 rounded-xl border border-slate-300/80 bg-white/85 shadow-lg backdrop-blur-sm">
+          <div className="absolute bottom-[calc(100%+10px)] left-1/2 z-20 max-h-[min(68vh,540px)] w-[min(660px,calc(100vw-24px))] -translate-x-1/2 overflow-y-auto overscroll-contain rounded-xl border border-slate-300/80 bg-white/85 shadow-lg backdrop-blur-sm">
             <div className="flex items-center justify-between gap-2 px-3 py-2">
               <div className="text-sm font-semibold text-figmaDark">
                 Link tools
