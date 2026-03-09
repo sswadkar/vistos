@@ -246,7 +246,8 @@ export default function App() {
   useEffect(() => {
     if (isHomeIndex) return;
     const isLoopingFrame = Boolean(frame.loop);
-    const shouldAnimateCurrentFrame = isLoopingFrame || isPlaying || moment.t < 1;
+    const shouldAnimateCurrentFrame =
+      isLoopingFrame || isPlaying || moment.t < 1;
     if (!shouldAnimateCurrentFrame) {
       if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
@@ -365,9 +366,7 @@ export default function App() {
   }
 
   return (
-    <div
-      className="grid h-[var(--app-viewport-h)] grid-rows-[1fr_auto] items-center justify-items-center gap-2.5 overflow-hidden bg-figmaBg px-3 pt-[calc(10px+var(--app-safe-top))] pb-[calc(16px+var(--app-safe-bottom))] text-figmaInk"
-    >
+    <div className="grid h-[var(--app-viewport-h)] grid-rows-[1fr_auto] items-center justify-items-center gap-2.5 overflow-hidden bg-figmaBg px-3 pt-[calc(10px+var(--app-safe-top))] pb-[calc(16px+var(--app-safe-bottom))] text-figmaInk">
       <Stage
         scene={scene}
         frame={frame}
@@ -411,7 +410,7 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="space-y-2 rounded-lg border border-slate-300/70 bg-white/60 p-2.5">
+              <div className="space-y-2 rounded-lg border border-slate-300/70 p-2.5">
                 <div className="text-xs font-semibold uppercase tracking-wide text-figmaMuted">
                   Select Range
                 </div>
@@ -477,7 +476,7 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="space-y-2 rounded-lg border border-slate-300/70 bg-white/60 p-2.5">
+              <div className="space-y-2 rounded-lg border border-slate-300/70 p-2.5">
                 <div className="text-xs font-semibold uppercase tracking-wide text-figmaMuted">
                   Copy Links
                 </div>
@@ -529,7 +528,7 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="space-y-2 rounded-lg border border-slate-300/70 bg-white/60 p-2.5">
+              <div className="space-y-2 rounded-lg border border-slate-300/70 p-2.5">
                 <div className="text-xs font-semibold uppercase tracking-wide text-figmaMuted">
                   Range Actions
                 </div>
@@ -597,7 +596,7 @@ export default function App() {
           </div>
         ) : null}
 
-        <div className="inline-flex items-center gap-2 rounded-xl border border-slate-300/70 bg-white/50 px-2 py-1.5 shadow-sm">
+        <div className="inline-flex items-center gap-2 rounded-xl border border-slate-300/70 bg-white/50 px-2 py-1.5">
           <div
             className="inline-grid grid-flow-col gap-0.5"
             aria-label="Frame navigation"
